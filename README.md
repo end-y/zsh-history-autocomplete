@@ -5,12 +5,13 @@ A simple and lightweight autocomplete plugin for Zsh that suggests commands from
 ## Features
 
 - 🚀 Real-time command suggestions from your history
-- 💡 Shows suggestions with a subtle indicator ( » )
+- 💡 Shows suggestions in subtle gray color
+- 📝 Interactive suggestion menu with arrow keys
 - ⌨️ Works with spaces and complex commands
 - ⚡ Fast and lightweight
 - 🎯 Key bindings:
   - `Tab` to accept suggestion
-  - `Enter` to accept and execute
+  - `Ctrl + W` to show interactive suggestion menu
   - Continue typing to ignore suggestion
 
 ## Installation

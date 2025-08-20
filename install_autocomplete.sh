@@ -180,7 +180,8 @@ autocomplete_history() {
         if [[ -n "$suggestion" && "$suggestion" != "$input_text" ]]; then
             local completion="${suggestion:${#input_text}}"
             POSTDISPLAY="${completion}"
-            region_highlight+=("$((CURSOR + ${#BUFFER})) $((CURSOR + ${#BUFFER} + ${#completion})) fg=242")
+            # İmlecin sağındaki öneriyi soluk göster (POSTDISPLAY kısmı)
+            region_highlight+=("${#BUFFER} $((${#BUFFER} + ${#completion})) fg=242")
         fi
     } || {
         POSTDISPLAY=""

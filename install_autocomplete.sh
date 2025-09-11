@@ -37,7 +37,9 @@ starts_with() {
 get_suggestions() {
     local input_text="$BUFFER"
     local count=0
-    local commands=(${(f)"$(history -n -r 1)"})
+    # Use `fc -l 1` and strip leading history numbers for portability (some fc/history
+    # implementations don't support -n/-r flags). This produces plain command lines.
+    local commands=(${(f)"$(fc -l 1 | sed -E 's/^[[:space:]]*[0-9]+\s*//')"})
     local unique_commands=()
     
     typeset -A seen 
@@ -175,7 +177,8 @@ autocomplete_history() {
                 suggestion="$history_entry"
                 break
             fi
-        done < <(fc -l -n 1)
+        # Read history and strip leading numbers added by `fc -l`
+        done < <(fc -l 1 | sed -E 's/^[[:space:]]*[0-9]+\s*//')
 
         if [[ -n "$suggestion" && "$suggestion" != "$input_text" ]]; then
             local completion="${suggestion:${#input_text}}"
@@ -204,7 +207,8 @@ accept_suggestion() {
                 suggestion="$history_entry"
                 break
             fi
-        done < <(fc -l -n 1)
+        # Read history and strip leading numbers added by `fc -l`
+        done < <(fc -l 1 | sed -E 's/^[[:space:]]*[0-9]+\s*//')
         
         if [[ -n "$suggestion" && "$suggestion" != "$input_text" ]]; then
             BUFFER="$suggestion"

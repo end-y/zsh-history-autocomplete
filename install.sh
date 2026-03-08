@@ -3,6 +3,8 @@
 INSTALL_DIR="$HOME/.zsh-history-autocomplete"
 ZSH_CONFIG="$HOME/.zshrc"
 SOURCE_LINE="source ${INSTALL_DIR}/init.zsh"
+REPO_URL="https://raw.githubusercontent.com/end-y/zsh-history-autocomplete/main/src"
+SRC_FILES=(config.zsh history.zsh highlight.zsh suggestion.zsh menu.zsh init.zsh)
 
 # Uninstall with -d flag
 if [[ "$1" == "-d" || "$1" == "--delete" || "$1" == "--uninstall" ]]; then
@@ -39,11 +41,23 @@ if [[ -d "$INSTALL_DIR" ]]; then
     fi
 fi
 
-# Determine source directory (where this script lives)
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-
 mkdir -p "$INSTALL_DIR"
-cp "${SCRIPT_DIR}/src/"*.zsh "$INSTALL_DIR/"
+
+# Try local copy first (for development), otherwise download from GitHub
+SCRIPT_DIR="$(cd "$(dirname "$0" 2>/dev/null)" 2>/dev/null && pwd)"
+
+if [[ -n "$SCRIPT_DIR" && -f "${SCRIPT_DIR}/src/init.zsh" ]]; then
+    cp "${SCRIPT_DIR}/src/"*.zsh "$INSTALL_DIR/"
+else
+    echo "Downloading files..."
+    for file in "${SRC_FILES[@]}"; do
+        if ! curl -fsSL "${REPO_URL}/${file}" -o "${INSTALL_DIR}/${file}"; then
+            echo "Failed to download ${file}. Aborting."
+            rm -rf "$INSTALL_DIR"
+            exit 1
+        fi
+    done
+fi
 
 echo "Installed to $INSTALL_DIR"
 

@@ -29,36 +29,13 @@ A lightweight Zsh plugin that suggests commands from your history as you type, w
 ### Quick Install
 
 ```bash
-git clone https://github.com/end-y/zsh-history-autocomplete.git
-cd zsh-history-autocomplete
-bash install.sh
+curl -fsSL https://raw.githubusercontent.com/end-y/zsh-history-autocomplete/main/install.sh | bash
 ```
 
-### Manual Installation
-
-1. Clone or download the repository
-2. Run the installer:
+### Uninstallation
 
 ```bash
-bash install.sh
-```
-
-3. Restart your terminal or run:
-
-```bash
-source ~/.zsh-history-autocomplete/init.zsh
-```
-
-## Uninstallation
-
-```bash
-bash install.sh -d
-```
-
-Or with `--uninstall`:
-
-```bash
-bash install.sh --uninstall
+curl -fsSL https://raw.githubusercontent.com/end-y/zsh-history-autocomplete/main/install.sh | bash -s -- -d
 ```
 
 ## Configuration

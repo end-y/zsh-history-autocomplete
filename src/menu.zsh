@@ -47,10 +47,12 @@ show_suggestions() {
         printf "%s %-$((box_width-3))s%s" "│" "$search_display" "│" >/dev/tty
 
         # Suggestions
+        local max_text_width=$((box_width - 4))
         local i=1
         for suggestion in "${suggestions[@]}"; do
             tput cup $((box_y + 1 + i)) $box_x >/dev/tty
-            local highlighted="$(_hac_highlight_command "$suggestion" "$filter_text")"
+            local display_text="$(_hac_truncate_text "$suggestion" "$max_text_width")"
+            local highlighted="$(_hac_highlight_command "$display_text" "$filter_text")"
             if ((i == selected_index)); then
                 printf "%s %-$((box_width-3))s%s" "│" "" "│" >/dev/tty
                 tput cup $((box_y + 1 + i)) $((box_x + 2)) >/dev/tty

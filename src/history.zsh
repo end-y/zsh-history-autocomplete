@@ -17,16 +17,50 @@ _hac_frequency_map() {
 
 _hac_fuzzy_match() {
     local pattern="$1" text="$2"
-    # Every character of pattern must appear in text, in order
-    local i=0 j=0
     local plen=${#pattern} tlen=${#text}
-    while (( i < plen && j < tlen )); do
-        if [[ "${text:$j:1}" == "${pattern:$i:1}" ]]; then
-            (( i++ ))
+
+    # Short patterns (<=2): match all chars in order
+    if (( plen <= 2 )); then
+        local i=0 j=0
+        while (( i < plen && j < tlen )); do
+            if [[ "${text:$j:1}" == "${pattern:$i:1}" ]]; then
+                (( i++ ))
+            fi
+            (( j++ ))
+        done
+        (( i == plen ))
+        return
+    fi
+
+    # Longer patterns: split into bigrams, each must appear in order
+    local j=0
+    local bi=0
+    while (( bi < plen )); do
+        local chunk_len=2
+        if (( bi + chunk_len > plen )); then
+            chunk_len=$((plen - bi))
         fi
-        (( j++ ))
+        local chunk="${pattern:$bi:$chunk_len}"
+        local clen=${#chunk}
+
+        # Find chunk in text starting from position j
+        local found=0
+        while (( j + clen <= tlen )); do
+            if [[ "${text:$j:$clen}" == "$chunk" ]]; then
+                (( j += clen ))
+                found=1
+                break
+            fi
+            (( j++ ))
+        done
+
+        if (( !found )); then
+            return 1
+        fi
+
+        (( bi += chunk_len ))
     done
-    (( i == plen ))
+    return 0
 }
 
 _hac_search_history() {

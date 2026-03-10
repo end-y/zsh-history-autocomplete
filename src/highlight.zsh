@@ -1,5 +1,20 @@
 #!/bin/zsh
 
+_hac_truncate_text() {
+    local text="$1"
+    local max_width="$2"
+    local len=${#text}
+
+    if (( len <= max_width )); then
+        printf '%s' "$text"
+        return
+    fi
+
+    local left_len=$(( (max_width - 1) / 2 ))
+    local right_len=$(( max_width - 1 - left_len ))
+    printf '%s…%s' "${text:0:$left_len}" "${text:$((len - right_len)):$right_len}"
+}
+
 _hac_highlight_command() {
     local text="$1"
     local search_term="$2"
